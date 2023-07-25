@@ -44,9 +44,19 @@ public class CameraController : MonoBehaviour
     {
         if(Input.GetMouseButton(1))
             CameraTPSLook();
+
+        MoveTarget();
     }
     #endregion
 
+    private void MoveTarget()
+    {
+        float vertical = Input.GetAxis("Vertical");
+        float horizontal = Input.GetAxis("Horizontal");
+
+        lookAt.position += new Vector3(horizontal, 0, vertical) * (Time.deltaTime * 8);
+    }
+    
     #region Camera Look
     private void CameraTPSLook()
     {
