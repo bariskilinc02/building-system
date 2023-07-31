@@ -176,6 +176,11 @@ public class ObjectPlacementSystem : PlacementSystemBase
             {
                 item.connectedGrid.RemoveItem(item);
             }
+
+            if (item is ItemHasGrid itemHasGrid)
+            {
+                itemHasGrid.DisableGrid();
+            }
             
             item.DisableTrigger();
             

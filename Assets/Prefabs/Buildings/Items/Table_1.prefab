@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80f7210d9def99946a558f3f82064d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemId: Table_1x1
+  itemData: {fileID: 0}
   itemMesh: {fileID: 2088042564458881164}
   lastCoordinate: {x: 0, y: 0}
   itemPlacedBefore: 0

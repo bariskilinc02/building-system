@@ -134,7 +134,77 @@ public class GridBase : MonoBehaviour
         return result;
     }
 
+    public List<Vector2Int> GetAreaCoordinateList(Vector2Int coordinate, Vector2Int itemSize, Direction direction)
+    {
+        List<Vector2Int> result = new List<Vector2Int>();
+        
+        Vector2Int cellToSearch = coordinate;
+
+        #region 0 degree
+        for (int i = 0; i < itemSize.x; i++)
+        {
+            for (int j = 0; j < itemSize.y; j++)
+            {
+                result.Add(cellToSearch);
+                cellToSearch.y += 1;
+            }
+
+            cellToSearch.y = coordinate.y;
+            cellToSearch.x += 1;
+        }
+        
+
         #endregion
+     
+        #region 90 degree
+        for (int i = 0; i < itemSize.x; i++)
+        {
+            for (int j = 0; j < itemSize.y; j++)
+            {
+                result.Add(cellToSearch);
+                cellToSearch.y += 1;
+            }
+
+            cellToSearch.y = coordinate.y;
+            cellToSearch.x += 1;
+        }
+        
+
+        #endregion
+        #region 180 degree
+        for (int i = 0; i < itemSize.x; i++)
+        {
+            for (int j = 0; j < itemSize.y; j++)
+            {
+                result.Add(cellToSearch);
+                cellToSearch.y += 1;
+            }
+
+            cellToSearch.y = coordinate.y;
+            cellToSearch.x += 1;
+        }
+        
+
+        #endregion
+        #region 270 degree
+        for (int i = 0; i < itemSize.x; i++)
+        {
+            for (int j = 0; j < itemSize.y; j++)
+            {
+                result.Add(cellToSearch);
+                cellToSearch.y += 1;
+            }
+
+            cellToSearch.y = coordinate.y;
+            cellToSearch.x += 1;
+        }
+        
+
+        #endregion
+
+        return result;
+    }
+    #endregion
    
     
     public Cell GetCell(Vector2Int cellCoordinate)

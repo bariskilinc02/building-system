@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21ee83c9c3227614fa8c7be92ac9e8d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemId: Bookcase_1x1
+  itemData: {fileID: 0}
   itemMesh: {fileID: 4148823611451655329}
   lastCoordinate: {x: 0, y: 0}
   itemPlacedBefore: 0

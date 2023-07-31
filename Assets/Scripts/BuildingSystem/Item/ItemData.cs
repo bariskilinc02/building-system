@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemData
+[CreateAssetMenu(menuName = "SO/Item/Item Data")]
+public class ItemData : ScriptableObject
 {
+    public string id;
     public Vector2Int size;
     public Direction direction;
     public bool requireWall;
