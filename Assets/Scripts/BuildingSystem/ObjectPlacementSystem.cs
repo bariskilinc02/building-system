@@ -22,8 +22,20 @@ public class ObjectPlacementSystem : PlacementSystemBase
         DrawPlacement();
         
         PlaceItemTest();
+
+        RotateItem();
     }
 
+    public void RotateItem()
+    {
+        if (movingItem == null) return;
+
+        if (!Input.GetKeyDown(KeyCode.E)) return;
+        
+        movingItem.ChangeDirection();
+
+    }
+    
     public override void OnSystemEnabled()
     {
         
@@ -48,17 +60,18 @@ public class ObjectPlacementSystem : PlacementSystemBase
             GridBase gridBase = gridMesh.GetGrid();
 
             Vector2Int cellCoordinate = gridBase.GetCellCoordinate(hitInfo.point);
-            var result = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size);
+            var result = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size, movingItem.itemData.direction);
 
             movingItem.transform.position = gridBase.GetCellPosition(hitInfo.point);
         }
     }
 
+    /*
     public void PlaceItem()
     {
         if (!Input.GetMouseButtonUp(0))return;
 
-            if (movingItem == null) return;
+        if (movingItem == null) return;
 
         if (!SendRay(out RaycastHit hit)) return;
         
@@ -76,8 +89,9 @@ public class ObjectPlacementSystem : PlacementSystemBase
                     
                 }
             }
+
             
-            var result = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size);
+            var result = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size, movingItem.itemData.direction);
             if (!result)
             {
                 PlaceItemToLastPosition(movingItem);
@@ -95,7 +109,7 @@ public class ObjectPlacementSystem : PlacementSystemBase
         }
         
     }
-
+*/
     public void PlaceItemTest()
     {
         if (!Input.GetMouseButtonUp(0))return;
@@ -120,7 +134,7 @@ public class ObjectPlacementSystem : PlacementSystemBase
                 }
             }
             
-            var cellIsEmpty = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size);
+            var cellIsEmpty = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size, movingItem.itemData.direction);
             
             
             if (!cellIsEmpty)
@@ -138,7 +152,7 @@ public class ObjectPlacementSystem : PlacementSystemBase
             else
             {
                 movingItem.transform.position = gridBase.GetCellPosition(hit.point);
-                gridBase.PlaceItem(gridBase, cellCoordinate, movingItem);
+                gridBase.PlaceItem(gridBase, cellCoordinate, movingItem, movingItem.itemData.direction);
                 if (movingItem is ItemHasGrid hasGridItem)
                 {
                     hasGridItem.EnableGrid();
@@ -155,7 +169,7 @@ public class ObjectPlacementSystem : PlacementSystemBase
     }
     public void PlaceItemToLastPosition(Item item)
     {
-        item.connectedGrid.PlaceItem(movingItem.connectedGrid, movingItem.lastCoordinate, movingItem);
+        item.connectedGrid.PlaceItem(movingItem.connectedGrid, movingItem.lastCoordinate, movingItem, movingItem.lastDirection);
         movingItem.transform.position = item.connectedGrid.GetCellWorldPositionFromCoordinate(movingItem.lastCoordinate);
         movingItem.EnableTrigger();
         movingItem.itemPlacedBefore = true;
@@ -172,6 +186,8 @@ public class ObjectPlacementSystem : PlacementSystemBase
         {
             Item item = itemMesh.GetItem();
 
+            item.lastDirection = item.itemData.direction;
+            
             if (item.itemPlacedBefore)
             {
                 item.connectedGrid.RemoveItem(item);

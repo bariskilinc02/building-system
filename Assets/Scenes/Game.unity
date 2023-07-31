@@ -3648,7 +3648,7 @@ PrefabInstance:
     - target: {fileID: 3570890485812284328, guid: 38bc9dc384750fc468415efbf5f0e1f9,
         type: 3}
       propertyPath: m_text
-      value: Table 2x2
+      value: Table 2x1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 38bc9dc384750fc468415efbf5f0e1f9, type: 3}

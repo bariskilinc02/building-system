@@ -64,13 +64,23 @@ public class GridBase : MonoBehaviour
         return actualPosition;
     }
 
-    public void PlaceItem(GridBase gridBase ,Vector2Int coordinate, Item item)
+    public void PlaceItem(GridBase gridBase ,Vector2Int coordinate, Item item, Direction direction)
     {
+        item.itemData.direction = direction;
+        item.SetRotation();
         item.lastCoordinate = coordinate;
         item.connectedGrid = gridBase;
         
         Vector2Int cellToPlaced = coordinate;
+
+        var coordinateList = GetAreaCoordinateList(coordinate, item.itemData.size, item.itemData.direction);
         
+        foreach (var coordinateInList in coordinateList)
+        {
+            cells[coordinateInList].placedItem = item;
+            item.occupiedCells.Add(cells[coordinateInList]);
+        } 
+        /*
         for (int i = 0; i < item.itemData.size.x; i++)
         {
             for (int j = 0; j < item.itemData.size.y; j++)
@@ -84,6 +94,7 @@ public class GridBase : MonoBehaviour
             cellToPlaced.y = coordinate.y;
             cellToPlaced.x += 1;
         }
+        */
     }
     
     public void RemoveItem(Item item)
@@ -101,34 +112,23 @@ public class GridBase : MonoBehaviour
         return cells[coordinate].IsOccupied();
     }
 
-    public bool IsCellsEmpty(Vector2Int coordinate, Vector2Int itemSize)
+    public bool IsCellsEmpty(Vector2Int coordinate, Vector2Int itemSize, Direction direction)
     {
         bool result = false;
 
         Vector2Int cellToSearch = coordinate;
-        
-        for (int i = 0; i < itemSize.x; i++)
+
+        var coordinateList = GetAreaCoordinateList(coordinate, itemSize, direction);
+
+        for (int i = 0; i < coordinateList.Count; i++)
         {
-            for (int j = 0; j < itemSize.y; j++)
-            {
-                if (!cells.TryGetValue(cellToSearch, out Cell cell))
-                    return false;
-              
-                
-                if (cells[cellToSearch].IsOccupied())
-                {
-                    return false;
-                }
-
-                result = true;
-
-                cellToSearch.y += 1;
-                
-                //Debug.Log(cellToSearch);
-            }
-
-            cellToSearch.y = coordinate.y;
-            cellToSearch.x += 1;
+            if (!cells.TryGetValue(coordinateList[i], out Cell cell))
+                return false;
+            
+            if (cells[coordinateList[i]].IsOccupied())
+                return false;
+            
+            result = true;
         }
         
         return result;
@@ -141,67 +141,71 @@ public class GridBase : MonoBehaviour
         Vector2Int cellToSearch = coordinate;
 
         #region 0 degree
-        for (int i = 0; i < itemSize.x; i++)
+
+        if (direction == Direction._0)
         {
-            for (int j = 0; j < itemSize.y; j++)
+            for (int i = 0; i < itemSize.x; i++)
             {
-                result.Add(cellToSearch);
-                cellToSearch.y += 1;
+                for (int j = 0; j < itemSize.y; j++)
+                {
+                    result.Add(cellToSearch);
+                    cellToSearch.y += 1;
+                }
+
+                cellToSearch.y = coordinate.y;
+                cellToSearch.x += 1;
             }
-
-            cellToSearch.y = coordinate.y;
-            cellToSearch.x += 1;
         }
-        
-
         #endregion
-     
         #region 90 degree
-        for (int i = 0; i < itemSize.x; i++)
+        else if (direction == Direction._90)
         {
-            for (int j = 0; j < itemSize.y; j++)
+            for (int i = 0; i < itemSize.y; i++)
             {
-                result.Add(cellToSearch);
-                cellToSearch.y += 1;
+                for (int j = 0; j < itemSize.x; j++)
+                {
+                    result.Add(cellToSearch);
+                    cellToSearch.y -= 1;
+                }
+
+                cellToSearch.y = coordinate.y;
+                cellToSearch.x += 1;
             }
-
-            cellToSearch.y = coordinate.y;
-            cellToSearch.x += 1;
         }
-        
-
         #endregion
         #region 180 degree
-        for (int i = 0; i < itemSize.x; i++)
+        else if (direction == Direction._180)
         {
-            for (int j = 0; j < itemSize.y; j++)
+            for (int i = 0; i < itemSize.x; i++)
             {
-                result.Add(cellToSearch);
-                cellToSearch.y += 1;
+                for (int j = 0; j < itemSize.y; j++)
+                {
+                    result.Add(cellToSearch);
+                    cellToSearch.y += 1;
+                }
+
+                cellToSearch.y = coordinate.y;
+                cellToSearch.x -= 1;
             }
-
-            cellToSearch.y = coordinate.y;
-            cellToSearch.x += 1;
         }
-        
-
         #endregion
         #region 270 degree
-        for (int i = 0; i < itemSize.x; i++)
+        else if (direction == Direction._270)
         {
-            for (int j = 0; j < itemSize.y; j++)
+            for (int i = 0; i < itemSize.y; i++)
             {
-                result.Add(cellToSearch);
-                cellToSearch.y += 1;
+                for (int j = 0; j < itemSize.x; j++)
+                {
+                    result.Add(cellToSearch);
+                    cellToSearch.y += 1;
+                }
+
+                cellToSearch.y = coordinate.y;
+                cellToSearch.x += 1;
             }
 
-            cellToSearch.y = coordinate.y;
-            cellToSearch.x += 1;
         }
-        
-
         #endregion
-
         return result;
     }
     #endregion
