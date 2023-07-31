@@ -15,16 +15,16 @@ public class Item : MonoBehaviour
     public GridBase connectedGrid;
     public List<Cell> occupiedCells;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         occupiedCells = new List<Cell>();
         itemData = new ItemData();
-        itemData.size = new Vector2Int(1, 1);
+        itemData.size = new Vector2Int(2, 2);
         itemData.direction = Direction._0;
-        itemData.requireWall = true;
+        itemData.requireWall = false;
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         EnableTrigger();
     }

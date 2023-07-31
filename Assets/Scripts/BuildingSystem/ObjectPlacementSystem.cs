@@ -2,25 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPlacer : MonoBehaviour
+public class ObjectPlacementSystem : PlacementSystemBase
 {
     private Camera _camera;
 
     public Item movingItem;
+    
+    public ItemPlacementType itemPlacementType;
     // Start is called before the first frame update
     void Start()
     {
         _camera = Camera.main;
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public override void Run()
     {
         PickItem();
         
         DrawPlacement();
         
         PlaceItemTest();
+    }
+
+    public override void OnSystemEnabled()
+    {
+        
+    }
+
+    public override void OnSystemDisabled()
+    {
+        
     }
 
     public void DrawPlacement()
@@ -128,6 +139,10 @@ public class ObjectPlacer : MonoBehaviour
             {
                 movingItem.transform.position = gridBase.GetCellPosition(hit.point);
                 gridBase.PlaceItem(gridBase, cellCoordinate, movingItem);
+                if (movingItem is ItemHasGrid hasGridItem)
+                {
+                    hasGridItem.EnableGrid();
+                }
                 movingItem.EnableTrigger();
                 movingItem.itemPlacedBefore = true;
                 movingItem = null;
@@ -185,4 +200,28 @@ public class ObjectPlacer : MonoBehaviour
         hit = raycastHit;
         return true;
     }
+    
+    public void ChangeWallPlacementType()
+    {
+        switch (itemPlacementType)
+        {
+            case ItemPlacementType.Add:
+                SetItemPlacementType(ItemPlacementType.Remove);
+                
+                break;
+            case ItemPlacementType.Remove:
+                SetItemPlacementType(ItemPlacementType.Add);
+                break;
+        }
+    }
+    
+    private void SetItemPlacementType(ItemPlacementType type)
+    {
+        itemPlacementType = type;
+    }
+}
+public enum ItemPlacementType
+{
+    Add,
+    Remove
 }

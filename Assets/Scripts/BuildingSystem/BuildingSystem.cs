@@ -2,23 +2,98 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BuildingSystem : SingletonBehaviour<BuildingSystem>
 {
-    public ObjectPlacer objectPlacer;
 
-    public BuildType buildType;
+    [SerializeField] private PlacementSystemBase currentPlacementSystemBase;
+    public ObjectPlacementSystem objectPlacementSystem;
+    public WallPlacementSystem wallPlacer;
+    public WallDesignSystem WallDesigner;
+    
+    public BuildType currentBuildType;
     public bool inBuildMode;
 
+    public Action OnWallPlacementSystemEnabled;
+    public Action OnWallPlacementSystemDisabled;
+    
+    public Action OnObjectPlacementSystemEnabled;
+    public Action OnObjectPlacementSystemDisabled;
+    
     public Action OnBuildModeEnabled;
     public Action OnBuildModeDisabled;
 
     public List<Item> items;
 
+    public List<Wall> wallPrefabs;
+
+    
+    private void Start()
+    {
+        currentBuildType = BuildType.Null;
+    }
+
+    private void Update()
+    {
+        if (currentPlacementSystemBase == null && inBuildMode == false) return;
+        
+        currentPlacementSystemBase.Run();
+    }
 
     public void SetBuildType(BuildType type)
     {
-        buildType = type;
+        if (type == BuildType.Item)
+        {
+            if (currentBuildType == BuildType.Item) return;
+            
+            if (currentPlacementSystemBase != null)
+            {
+                currentPlacementSystemBase.OnSystemDisabled();
+            }
+            currentPlacementSystemBase = objectPlacementSystem;
+            
+            currentPlacementSystemBase.OnSystemEnabled();
+            
+            OnWallPlacementSystemDisabled?.Invoke();
+        }
+        else if(type == BuildType.Wall)
+        {
+            if (currentBuildType == BuildType.Wall) return;
+            
+            if (currentPlacementSystemBase != null)
+            {
+                currentPlacementSystemBase.OnSystemDisabled();
+            }
+       
+            currentPlacementSystemBase = wallPlacer;
+            if (currentPlacementSystemBase != null)
+            {
+                currentPlacementSystemBase.OnSystemEnabled();
+            }
+            
+            //OnWallPlacementSystemEnabled?.Invoke();
+        }
+        else if(type == BuildType.WallDesign)
+        {
+            if (currentBuildType == BuildType.WallDesign) return;
+            
+            if (currentPlacementSystemBase != null)
+            {
+                currentPlacementSystemBase.OnSystemDisabled();
+            }
+       
+            currentPlacementSystemBase = WallDesigner;
+            if (currentPlacementSystemBase != null)
+            {
+                currentPlacementSystemBase.OnSystemEnabled();
+            }
+            
+            //OnWallPlacementSystemEnabled?.Invoke();
+        }
+        currentBuildType = type;
+        
+        EnableBuildMode();
     }
     
     public void EnableBuildMode()
@@ -33,27 +108,43 @@ public class BuildingSystem : SingletonBehaviour<BuildingSystem>
 
     public void CreateNewItem(int index)
     {
-        if (objectPlacer.movingItem == null)
+        if (objectPlacementSystem.movingItem == null)
         {
-            objectPlacer.movingItem = Instantiate(items[index]);
+            objectPlacementSystem.movingItem = Instantiate(items[index]);
         }
-        else if (objectPlacer.movingItem != null)
+        else if (objectPlacementSystem.movingItem != null)
         {
-            if (objectPlacer.movingItem.itemPlacedBefore)
+            if (objectPlacementSystem.movingItem.itemPlacedBefore)
             {
-                objectPlacer.PlaceItemToLastPosition(objectPlacer.movingItem);
+                objectPlacementSystem.PlaceItemToLastPosition(objectPlacementSystem.movingItem);
             }
             else
             {
-                Destroy(objectPlacer.movingItem.gameObject);
-                objectPlacer.movingItem = Instantiate(items[index]);
+                Destroy(objectPlacementSystem.movingItem.gameObject);
+                objectPlacementSystem.movingItem = Instantiate(items[index]);
             }
         }
     }
 
+    public void SelectWallDesignPrefab(int index)
+    {
+        if (WallDesigner.movingWall == null)
+        {
+            WallDesigner.movingWall = Instantiate(wallPrefabs[index]);
+            WallDesigner.movingWall.wallMesh.DisableInteraction();
+        }
+        else if (WallDesigner.movingWall != null)
+        {
+            Destroy(WallDesigner.movingWall.gameObject);
+            WallDesigner.movingWall = Instantiate(wallPrefabs[index]);
+            WallDesigner.movingWall.wallMesh.DisableInteraction();
+        }
+    }
 }
 
 public enum BuildType{
+    Null,
     Item,
-    Wall
+    Wall,
+    WallDesign
 }

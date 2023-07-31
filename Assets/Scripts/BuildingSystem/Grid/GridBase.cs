@@ -5,10 +5,10 @@ using UnityEngine;
 public class GridBase : MonoBehaviour
 {
     public Vector2Int gridSize;
-    protected GridMesh _gridMesh;
+    public GridMesh _gridMesh;
     public int cellsPerUnit;
     protected Vector3 _rootPosition => transform.position;
-    private Dictionary<Vector2Int, Cell> cells;
+    public Dictionary<Vector2Int, Cell> cells;
     public List<Item> items;
 
     private void Awake()
@@ -142,4 +142,14 @@ public class GridBase : MonoBehaviour
         return cells[cellCoordinate];
     }
 
+    public void EnableGrid()
+    {
+        _gridMesh.gameObject.SetActive(true);
+    }
+    
+    public void DisableGrid()
+    {
+        _gridMesh.gameObject.SetActive(false);
+    }
+    
 }

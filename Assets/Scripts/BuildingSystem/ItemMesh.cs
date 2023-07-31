@@ -10,7 +10,7 @@ public class ItemMesh : MonoBehaviour
 
     private void Awake()
     {
-        _collider = GetComponent<BoxCollider>();
+        _collider = GetComponent<Collider>();
     }
 
     public Item GetItem()

@@ -80,14 +80,19 @@ public class GridGround : GridBase
     
     public Vector2Int GetEdgeVectorPoint(Vector3 position)
     {
+       
         var actualCoordinate = GetCellCoordinate(position);
+        var worldCoordinate = GetCornerWorldPosition(actualCoordinate);
         var cellCenterCoordinate = actualCoordinate + new Vector2(0.5f, 0.5f);
 
-        var direction = new Vector2(position.x, position.z) - cellCenterCoordinate;
+        var direction = new Vector2(position.x, position.z) - new Vector2(worldCoordinate.x, worldCoordinate.z) - new Vector2(0.5f, 0.5f);
         float angle = Vector2.SignedAngle(Vector2.right, direction);
         if (Input.GetKeyDown(KeyCode.E))
         {
+            Debug.Log(worldCoordinate);
+            Debug.Log(position);
             Debug.Log(angle);
+            Debug.Log(direction);
         }
 
         if (angle is > 0f and < 90f)
