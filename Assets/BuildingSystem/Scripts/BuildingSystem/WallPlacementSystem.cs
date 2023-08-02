@@ -91,13 +91,6 @@ public class WallPlacementSystem : PlacementSystemBase
                 
                 
             }
-            
-            
-            //Vector2Int cellCoordinate = gridBase.GetCellCoordinate(hitInfo.point);
-            //var result = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size);
-            
-            //movingItem.transform.position = gridBase.GetCellPosition(hitInfo.point);
-            //Debug.Log(result);
         }
     }
 
@@ -211,14 +204,11 @@ public class WallPlacementSystem : PlacementSystemBase
         {
             if(IsAnyItemInEdge(edgeVectors[i], wallDirection))
             {
-                Debug.Log(edgeVectors[i]);
-                Debug.Log("Overlap");
                 continue;
             }
             
             if (currentGrid.edges[edgeVectors[i].Fix()].wall != null)
             {
-                Debug.Log("zorting");
                 continue;
             }
             
@@ -234,9 +224,6 @@ public class WallPlacementSystem : PlacementSystemBase
             instantWall.GetComponent<Wall>().wallData.wallDirection = wallDirection;
 
             currentGrid.edges[edgeVectors[i].Fix()].wall = instantWall;
-            
-            //Debug.Log(edgeVectors[i].GetMiddlePoint());
-            //Debug.Log(edgeVectors[i].smallerPoint +"  " + edgeVectors[i].biggerPoint);
         }
     }
     

@@ -102,7 +102,6 @@ public class WallDesignSystem : PlacementSystemBase
         
         if (hit.transform.TryGetComponent(out WallMesh wallMesh))
         {
-            Debug.Log("zort");
             currentWall.wallMesh.ChangeModel(movingWall.wallMesh.model);
             if (!(currentWall == wallMesh.wall))
             {
