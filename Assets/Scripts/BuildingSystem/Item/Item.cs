@@ -32,7 +32,6 @@ public class Item : MonoBehaviour
 
     protected virtual void Start()
     {
-  
         EnableTrigger();
     }
 

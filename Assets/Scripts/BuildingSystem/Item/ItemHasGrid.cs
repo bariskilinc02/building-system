@@ -14,6 +14,9 @@ public class ItemHasGrid : Item
         
         BuildingSystem.Instance.OnWallPlacementSystemEnabled += DisableGrid;
         BuildingSystem.Instance.OnWallPlacementSystemDisabled += EnableGrid;
+        
+        BuildingSystem.Instance.OnBuildModeEnabled += EnableGrid;
+        BuildingSystem.Instance.OnBuildModeDisabled += DisableGrid;
     }
 
     public void EnableGrid()

@@ -113,6 +113,7 @@ public class GridGround : GridBase
         }
     }
 
+    //Returns edge vector list in a line with given length and direction
     public List<VectorEdge> GetEdgeVectorsInRange(Vector2Int startPoint, VectorDirection direction, int length)
     {
         List<VectorEdge> edgeVectors = new List<VectorEdge>();
@@ -143,6 +144,141 @@ public class GridGround : GridBase
             startVector += additiveVector;
         }
         
+        return edgeVectors;
+    }
+    
+    //Finds edge vectors inside a field, not around it
+    public List<VectorEdge> GetEdgeVectorsInField(Vector2Int startPoint, Direction direction, Vector2Int size)
+    {
+        List<VectorEdge> edgeVectors = new List<VectorEdge>();
+
+        #region 0 degrees
+        if (direction == Direction._0)
+        {
+            Vector2Int cellToSearch = startPoint + new Vector2Int(1,0);
+            for (int i = 1; i < size.x; i++)
+            {
+                for (int j = 0; j < size.y; j++)
+                {
+                    edgeVectors.Add(new VectorEdge(cellToSearch , cellToSearch + new Vector2Int(0, 1)).Fix() );
+                    cellToSearch.y += 1;
+                }
+            
+                cellToSearch.y = startPoint.y;
+                cellToSearch.x += 1;
+            }
+            
+            cellToSearch = startPoint + new Vector2Int(0,1);
+        
+            for (int j = 1; j < size.y; j++)
+            {
+                for (int i = 0; i < size.x; i++)
+                {
+                    edgeVectors.Add(new VectorEdge(cellToSearch , cellToSearch + new Vector2Int(1, 0)) );
+                    cellToSearch.x += 1;
+                }
+            
+                cellToSearch.x = startPoint.x;
+                cellToSearch.y += 1;
+            }
+        }
+        #endregion
+
+        #region 90 degrees
+        else if (direction == Direction._90)
+        {
+            Vector2Int cellToSearch = startPoint + new Vector2Int(1,0);
+            for (int i = 1; i < size.y; i++)
+            {
+                for (int j = 0; j < size.x; j++)
+                {
+                    edgeVectors.Add(new VectorEdge(cellToSearch , cellToSearch + new Vector2Int(0, -1)).Fix() );
+                    cellToSearch.y -= 1;
+                }
+            
+                cellToSearch.y = startPoint.y;
+                cellToSearch.x += 1;
+            }
+            
+            cellToSearch = startPoint + new Vector2Int(0,-1);
+        
+            for (int j = 1; j < size.x; j++)
+            {
+                for (int i = 0; i < size.y; i++)
+                {
+                    edgeVectors.Add(new VectorEdge(cellToSearch , cellToSearch + new Vector2Int(1, 0)) );
+                    cellToSearch.x += 1;
+                }
+            
+                cellToSearch.x = startPoint.x;
+                cellToSearch.y -= 1;
+            }
+        }
+        #endregion
+        #region 180 degrees
+        else if (direction == Direction._180)
+        {
+            Vector2Int cellToSearch = startPoint + new Vector2Int(0,0);
+            for (int i = 1; i < size.x; i++)
+            {
+                for (int j = 0; j < size.y; j++)
+                {
+                    edgeVectors.Add(new VectorEdge(cellToSearch , cellToSearch + new Vector2Int(0, 1)).Fix() );
+                    cellToSearch.y -= 1;
+                }
+            
+                cellToSearch.y = startPoint.y;
+                cellToSearch.x -= 1;
+            }
+            
+            cellToSearch = startPoint + new Vector2Int(0,0);
+        
+            for (int j = 1; j < size.y; j++)
+            {
+                for (int i = 0; i < size.x; i++)
+                {
+                    edgeVectors.Add(new VectorEdge(cellToSearch , cellToSearch + new Vector2Int(1, 0)).Fix() );
+                    cellToSearch.x -= 1;
+                }
+            
+                cellToSearch.x = startPoint.x;
+                cellToSearch.y -= 1;
+            }
+        }
+        #endregion
+        #region 270 degrees
+        else if (direction == Direction._270)
+        {
+            Vector2Int cellToSearch = startPoint + new Vector2Int(0,0);
+            for (int i = 1; i < size.y; i++)
+            {
+                for (int j = 0; j < size.x; j++)
+                {
+                    edgeVectors.Add(new VectorEdge(cellToSearch , cellToSearch + new Vector2Int(0, 1)).Fix());
+                    cellToSearch.y += 1;
+                }
+            
+                cellToSearch.y = startPoint.y;
+                cellToSearch.x -= 1;
+            }
+            
+            cellToSearch = startPoint + new Vector2Int(0,1);
+        
+            for (int j = 1; j < size.x; j++)
+            {
+                for (int i = 0; i < size.y; i++)
+                {
+                    edgeVectors.Add(new VectorEdge(cellToSearch , cellToSearch + new Vector2Int(1, 0)).Fix() );
+                    cellToSearch.x -= 1;
+                }
+            
+                cellToSearch.x = startPoint.x;
+                cellToSearch.y += 1;
+            }
+        }
+        #endregion
+
+
         return edgeVectors;
     }
     
@@ -177,7 +313,8 @@ public class GridGround : GridBase
         
         return cornerVectors;
     }
-
+ 
+    //Finds direction of line with given start and end point
     public VectorDirection GetVectorDirectionAndLength(Vector2Int startPoint, Vector2Int endPoint, out int length)
     {
         VectorDirection resultDirection;
@@ -240,6 +377,32 @@ public class GridGround : GridBase
     {
         VectorEdge edgeVector = GetEdgeVectorInDirection(cellCoordinate, direction);
         return edges[edgeVector];
+    }
+
+    public bool IsThereAnyWallInFieldAndIsFieldExist(Vector2Int startPoint, Direction direction, Vector2Int size)
+    {
+        foreach (var edgeVector in GetEdgeVectorsInField(startPoint, direction, size))
+        {
+            Debug.Log(edgeVector);
+            if (edges.TryGetValue(edgeVector, out Edge edge))
+            {
+        
+                if (edge.wall != null)
+                {
+                    Debug.Log(true);
+                    return true;
+                    
+                }
+            }
+            else
+            {
+                Debug.Log(edgeVector);
+                Debug.Log(true);
+                return true;
+            }
+        }
+        Debug.Log(false);
+        return false;
     }
 }
 

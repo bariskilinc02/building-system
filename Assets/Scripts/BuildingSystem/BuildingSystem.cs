@@ -32,17 +32,33 @@ public class BuildingSystem : SingletonBehaviour<BuildingSystem>
     private void Start()
     {
         currentBuildType = BuildType.Null;
+
+        OnBuildModeDisabled += () => SetBuildType(BuildType.Null);
     }
 
     private void Update()
     {
-        if (currentPlacementSystemBase == null && inBuildMode == false) return;
+        if (currentPlacementSystemBase == null || inBuildMode == false) return;
         
         currentPlacementSystemBase.Run();
     }
 
     public void SetBuildType(BuildType type)
     {
+        if (type == BuildType.Null)
+        {
+            currentBuildType = type;
+            
+            if (currentPlacementSystemBase != null)
+            {
+                currentPlacementSystemBase.OnSystemDisabled();
+            }
+
+            currentPlacementSystemBase = null;
+            
+            return;
+        }
+        
         if (type == BuildType.Item)
         {
             if (currentBuildType == BuildType.Item) return;
@@ -98,11 +114,16 @@ public class BuildingSystem : SingletonBehaviour<BuildingSystem>
     
     public void EnableBuildMode()
     {
+        if (inBuildMode == false)
+            OnBuildModeEnabled.Invoke();
+        
         inBuildMode = true;
     }
     
     public void DisableBuildMode()
     {
+        if (inBuildMode == true)
+            OnBuildModeDisabled.Invoke();
         inBuildMode = false;
     }
 

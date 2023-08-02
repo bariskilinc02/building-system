@@ -86,7 +86,6 @@ public class WallDesignSystem : PlacementSystemBase
             float yAngle = currentWall.wallData.GetWallAngleY();
             var eulerAngles = movingWall.transform.eulerAngles;
             movingWall.transform.eulerAngles = new Vector3(eulerAngles.x, yAngle, eulerAngles.z);
-            Debug.Log(yAngle);
         }
     }
 

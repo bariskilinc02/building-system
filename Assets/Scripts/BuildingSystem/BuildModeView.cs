@@ -6,9 +6,8 @@ using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class BuildModeView : MonoBehaviour
-{
-    public Button enableBuildModeButton;
-    public Button disableBuildModeButton;
+{ 
+    public Button onOffBuildModeButton;
     
     public Button buildTypeWallButton;
     public Button changeWallPlacementTypeButton;
@@ -22,8 +21,7 @@ public class BuildModeView : MonoBehaviour
     public GameObject wallDesignScreen;
     private void Awake()
     {
-        enableBuildModeButton.onClick.AddListener(OnClickedEnableBuildModeButton);
-        disableBuildModeButton.onClick.AddListener(OnClickedDisableBuildModeButton);
+        onOffBuildModeButton.onClick.AddListener(OnClickedOnOffBuildModeButton);
         
         buildTypeWallButton.onClick.AddListener(OnClickedBuildTypeWallButton);
         changeWallPlacementTypeButton.onClick.AddListener(OnClickedChangeWallPlacementTypeButton);
@@ -33,16 +31,21 @@ public class BuildModeView : MonoBehaviour
         buildTypeWallDesignButton.onClick.AddListener(OnClickedBuildTypeWallDesignButton);
     }
 
-    private void OnClickedEnableBuildModeButton()
+    private void OnClickedOnOffBuildModeButton()
     {
-        BuildingSystem.Instance.inBuildMode = true;
-        BuildingSystem.Instance.OnBuildModeEnabled?.Invoke();
-    }
-    
-    private void OnClickedDisableBuildModeButton()
-    {
-        BuildingSystem.Instance.inBuildMode = false;
-        BuildingSystem.Instance.OnBuildModeDisabled?.Invoke();
+        bool status = BuildingSystem.Instance.inBuildMode;
+        if (status)
+        {
+            BuildingSystem.Instance.inBuildMode = false;
+            BuildingSystem.Instance.OnBuildModeDisabled?.Invoke();
+        }
+        else
+        {
+            BuildingSystem.Instance.inBuildMode = true;
+            BuildingSystem.Instance.OnBuildModeEnabled?.Invoke();
+        }
+      
+
     }
     
     private void OnClickedBuildTypeWallButton()

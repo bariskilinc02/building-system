@@ -9,7 +9,7 @@ public class ObjectPlacementSystem : PlacementSystemBase
     public Item movingItem;
     
     public ItemPlacementType itemPlacementType;
-    // Start is called before the first frame update
+    
     void Start()
     {
         _camera = Camera.main;
@@ -129,6 +129,11 @@ public class ObjectPlacementSystem : PlacementSystemBase
             {
                 Edge edge = gridGround.GetEdgeInDirection(cellCoordinate, movingItem.itemData.direction);
                 if (edge.wall == null && movingItem.itemData.requireWall == true)
+                {
+                    canBuild = false;
+                }
+                
+                if (gridGround.IsThereAnyWallInFieldAndIsFieldExist(cellCoordinate, movingItem.itemData.direction, movingItem.itemData.size))
                 {
                     canBuild = false;
                 }

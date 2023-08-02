@@ -19,6 +19,9 @@ public class GridBase : MonoBehaviour
     protected virtual void Start()
     {
         CreateGrid();
+        
+        BuildingSystem.Instance.OnBuildModeEnabled += EnableGrid;
+        BuildingSystem.Instance.OnBuildModeDisabled += DisableGrid;
     }
 
     [Method()]
@@ -181,7 +184,7 @@ public class GridBase : MonoBehaviour
                 for (int j = 0; j < itemSize.y; j++)
                 {
                     result.Add(cellToSearch);
-                    cellToSearch.y += 1;
+                    cellToSearch.y -= 1;
                 }
 
                 cellToSearch.y = coordinate.y;
@@ -201,7 +204,7 @@ public class GridBase : MonoBehaviour
                 }
 
                 cellToSearch.y = coordinate.y;
-                cellToSearch.x += 1;
+                cellToSearch.x -= 1;
             }
 
         }
