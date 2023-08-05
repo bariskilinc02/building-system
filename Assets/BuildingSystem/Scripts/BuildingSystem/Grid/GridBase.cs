@@ -7,6 +7,7 @@ public class GridBase : MonoBehaviour
     public Vector2Int gridSize;
     public GridMesh _gridMesh;
     public int cellsPerUnit;
+    public Direction _gridDirection;
     protected Vector3 _rootPosition => transform.position;
     public Dictionary<Vector2Int, Cell> cells;
     public List<Item> items;
@@ -67,7 +68,7 @@ public class GridBase : MonoBehaviour
         return actualPosition;
     }
 
-    public void PlaceItem(GridBase gridBase ,Vector2Int coordinate, Item item, Direction direction)
+    public void PlaceItem(GridBase gridBase ,Vector2Int coordinate, Item item, Direction direction, Direction gridDirection)
     {
         item.itemData.direction = direction;
         item.SetRotation();
@@ -76,7 +77,7 @@ public class GridBase : MonoBehaviour
         
         Vector2Int cellToPlaced = coordinate;
 
-        var coordinateList = GetAreaCoordinateList(coordinate, item.itemData.size, item.itemData.direction);
+        var coordinateList = GetAreaCoordinateList(coordinate, item.itemData.size, item.itemData.direction, gridDirection);
         
         foreach (var coordinateInList in coordinateList)
         {
@@ -115,13 +116,13 @@ public class GridBase : MonoBehaviour
         return cells[coordinate].IsOccupied();
     }
 
-    public bool IsCellsEmpty(Vector2Int coordinate, Vector2Int itemSize, Direction direction)
+    public bool IsCellsEmpty(Vector2Int coordinate, Vector2Int itemSize, Direction direction, Direction gridDirection)
     {
         bool result = false;
 
         Vector2Int cellToSearch = coordinate;
 
-        var coordinateList = GetAreaCoordinateList(coordinate, itemSize, direction);
+        var coordinateList = GetAreaCoordinateList(coordinate, itemSize, direction, gridDirection);
 
         for (int i = 0; i < coordinateList.Count; i++)
         {
@@ -137,7 +138,7 @@ public class GridBase : MonoBehaviour
         return result;
     }
 
-    public List<Vector2Int> GetAreaCoordinateList(Vector2Int coordinate, Vector2Int itemSize, Direction direction)
+    public List<Vector2Int> GetAreaCoordinateList(Vector2Int coordinate, Vector2Int itemSize, Direction direction, Direction gridDirection)
     {
         List<Vector2Int> result = new List<Vector2Int>();
         
@@ -209,6 +210,41 @@ public class GridBase : MonoBehaviour
 
         }
         #endregion
+        
+        for (var i = 0; i < result.Count; i++)
+        {
+            var vector = result[i];
+            if (gridDirection == Direction._90)
+            {
+                vector.x = result[i].y;
+                vector.y = result[i].x;
+
+                vector.x = -vector.x;
+
+                vector.x -= 1;
+
+                result[i] = vector;
+            }
+            else if (gridDirection == Direction._180)
+            {
+                vector = -result[i];
+                vector -= new Vector2Int(1,1);
+
+                result[i] = vector;
+            }
+            else if (gridDirection == Direction._270)
+            {
+                vector.x = result[i].y;
+                vector.y = result[i].x;
+
+                vector.y = -vector.y;
+
+                vector.y -= 1;
+
+                result[i] = vector;
+            }
+        }
+        
         return result;
     }
     #endregion

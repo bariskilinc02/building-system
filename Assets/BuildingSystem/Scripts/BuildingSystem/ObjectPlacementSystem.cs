@@ -43,7 +43,8 @@ public class ObjectPlacementSystem : PlacementSystemBase
 
     public override void OnSystemDisabled()
     {
-        
+        if(movingItem != null)
+            Destroy(movingItem.gameObject);
     }
 
     public void DrawPlacement()
@@ -60,7 +61,7 @@ public class ObjectPlacementSystem : PlacementSystemBase
             GridBase gridBase = gridMesh.GetGrid();
 
             Vector2Int cellCoordinate = gridBase.GetCellCoordinate(hitInfo.point);
-            var result = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size, movingItem.itemData.direction);
+            var result = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size, movingItem.itemData.direction,gridBase._gridDirection);
 
             movingItem.transform.position = gridBase.GetCellPosition(hitInfo.point);
         }
@@ -139,7 +140,7 @@ public class ObjectPlacementSystem : PlacementSystemBase
                 }
             }
             
-            var cellIsEmpty = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size, movingItem.itemData.direction);
+            var cellIsEmpty = gridBase.IsCellsEmpty(cellCoordinate, movingItem.itemData.size, movingItem.itemData.direction, gridBase._gridDirection);
             
             
             if (!cellIsEmpty)
@@ -157,7 +158,7 @@ public class ObjectPlacementSystem : PlacementSystemBase
             else
             {
                 movingItem.transform.position = gridBase.GetCellPosition(hit.point);
-                gridBase.PlaceItem(gridBase, cellCoordinate, movingItem, movingItem.itemData.direction);
+                gridBase.PlaceItem(gridBase, cellCoordinate, movingItem, movingItem.itemData.direction,gridBase._gridDirection);
                 if (movingItem is ItemHasGrid hasGridItem)
                 {
                     hasGridItem.EnableGrid();
@@ -174,7 +175,7 @@ public class ObjectPlacementSystem : PlacementSystemBase
     }
     public void PlaceItemToLastPosition(Item item)
     {
-        item.connectedGrid.PlaceItem(movingItem.connectedGrid, movingItem.lastCoordinate, movingItem, movingItem.lastDirection);
+        item.connectedGrid.PlaceItem(movingItem.connectedGrid, movingItem.lastCoordinate, movingItem, movingItem.lastDirection, item.connectedGrid._gridDirection);
         movingItem.transform.position = item.connectedGrid.GetCellWorldPositionFromCoordinate(movingItem.lastCoordinate);
         movingItem.EnableTrigger();
         movingItem.itemPlacedBefore = true;

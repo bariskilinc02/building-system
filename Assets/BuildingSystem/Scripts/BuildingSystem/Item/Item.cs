@@ -45,7 +45,7 @@ public class Item : MonoBehaviour
         itemMesh.DisableTrigger();
     }
 
-    public void ChangeDirection()
+    public virtual void ChangeDirection()
     {
         itemData.direction += 1;
 

@@ -28,4 +28,11 @@ public class ItemHasGrid : Item
     {
         grid.DisableGrid();
     }
+
+    public override void ChangeDirection()
+    {
+        base.ChangeDirection();
+        
+        grid._gridDirection = itemData.direction;
+    }
 }

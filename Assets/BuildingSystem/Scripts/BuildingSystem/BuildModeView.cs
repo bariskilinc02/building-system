@@ -38,6 +38,9 @@ public class BuildModeView : MonoBehaviour
         {
             BuildingSystem.Instance.inBuildMode = false;
             BuildingSystem.Instance.OnBuildModeDisabled?.Invoke();
+            itemBuildingScreen.SetActive(false);
+            wallBuildingScreen.SetActive(false);
+            wallDesignScreen.SetActive(false);
         }
         else
         {
